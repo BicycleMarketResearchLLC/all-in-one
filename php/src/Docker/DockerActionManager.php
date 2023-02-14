@@ -372,6 +372,7 @@ class DockerActionManager
                 $portWithProtocol = $value->port . '/' . $value->protocol;
                 $exposedPorts[$portWithProtocol] = null;
             }
+            $requestBody['HostConfig']['NetworkMode'] = 'nextcloud-aio';
         } else {
             $requestBody['HostConfig']['NetworkMode'] = 'host';
         }
@@ -622,11 +623,11 @@ class DockerActionManager
         }
     }
 
-    public function DisconnectContainerFromNetwork(Container $container) : void
+    private function DisconnectContainerFromBridgeNetwork(string $id) : void
     {
 
         $url = $this->BuildApiUrl(
-            sprintf('networks/%s/disconnect', 'nextcloud-aio')
+            sprintf('networks/%s/disconnect', 'bridge')
         );
 
         try {
@@ -635,7 +636,7 @@ class DockerActionManager
                 $url,
                 [
                     'json' => [
-                        'container' => $container->GetIdentifier(),
+                        'container' => $id,
                     ],
                 ]
             );
@@ -699,6 +700,7 @@ class DockerActionManager
     public function ConnectMasterContainerToNetwork() : void
     {
         $this->ConnectContainerIdToNetwork('nextcloud-aio-mastercontainer', '');
+        $this->DisconnectContainerFromBridgeNetwork('nextcloud-aio-mastercontainer');
     }
 
     public function ConnectContainerToNetwork(Container $container) : void
