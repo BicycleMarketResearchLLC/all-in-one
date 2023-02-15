@@ -500,6 +500,8 @@ Be aware though that these locations will not be covered by the built-in backup 
 
 **Please note:** If you can't see the type "local storage" in the external storage admin options, a restart of the containers from the AIO interface may be required.
 
+**Please Note 2:** If you are unable to see files in your new "local" external storage, you can scan that specific folder by running the following on your host and speficying the folder name, as well as user: `sudo docker exec --user www-data -it nextcloud-aio-nextcloud php occ files:scan -v --path="/your-user/files/name_of_external_storage" `
+
 ### How to adjust the Talk port?
 By default will the talk container use port `3478/UDP` and `3478/TCP` for connections. You can adjust the port by adding e.g. `-e TALK_PORT=3478` to the initial docker run command and adjusting the port to your desired value.
 
